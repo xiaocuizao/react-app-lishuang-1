@@ -1,0 +1,14 @@
+{
+    "plugins": [
+      "prettier-plugin-organize-imports",
+      "prettier-plugin-tailwindcss"
+    ],
+    "tailwindFunctions": ["classNames"],
+    "singleQuote": true,
+    "trailingComma": "es5",
+	"semi": false,
+	"bracketSpacing": true,
+	"useTabs": true,
+	"bracketSameLine": true
+  }
+  
