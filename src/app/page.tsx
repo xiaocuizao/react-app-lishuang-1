@@ -1,16 +1,15 @@
-import Image from "next/image";
-import Login from "./login/page";
-import { Color } from "antd/es/color-picker";
-import Layout from "./layout";
+'use client'
+import type { AppProps } from 'next/app'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
-export default function Home({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <div>
-      <Layout>1111{children}</Layout>
-    </div>
-  );
+export default function Home({ Component, pageProps }: AppProps) {
+	const router = useRouter()
+	useEffect(() => {
+		if (router.asPath == '/') {
+			router.push('/page1/home')
+		}
+	}, [router])
+
+	return null
 }

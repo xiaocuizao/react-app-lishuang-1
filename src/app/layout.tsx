@@ -1,29 +1,35 @@
-"use client";
-import { useEffect, useState } from "react";
-import "./globals.css";
-import { useRouter, usePathname } from "next/navigation";
+'use client'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import './globals.css'
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode
 }>) {
-  const router = useRouter();
-  const [isJump, setIsJump] = useState(false);
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      // 在客户端渲染时才执行以下代码
-      let loginInfor = localStorage.getItem("loginInfor");
-      if (loginInfor) {
-        // router.push("/login");
-      }
-      setIsJump(true);
-    }
-  }, []);
+	const router = useRouter()
+	const [isJump, setIsJump] = useState(false)
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			// 在客户端渲染时才执行以下代码
+			let isLogin = localStorage.getItem('isLogin')
+			if (isLogin !== 'true') {
+				router.push('/login')
+			}
+			setIsJump(true)
+		}
+	}, [])
 
-  return (
-    <html lang="en">
-      <body>{isJump && <main>{children}</main>}</body>
-    </html>
-  );
+	return (
+		<html lang="en">
+			<body>
+				{isJump && (
+					<div>
+						<main>{children}</main>
+					</div>
+				)}
+			</body>
+		</html>
+	)
 }

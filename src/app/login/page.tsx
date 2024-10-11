@@ -1,8 +1,8 @@
 'use client'
 import type { FormProps } from 'antd'
-import { Button, Checkbox, Form, Input } from 'antd'
-import React, { useEffect, useState } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
+import { Button, Checkbox, Form, Input, message } from 'antd'
+import { NoticeType } from 'antd/es/message/interface'
+import { useRouter } from 'next/navigation'
 
 type FieldType = {
 	username?: string
@@ -10,22 +10,48 @@ type FieldType = {
 	remember?: string
 }
 
+const validateMessages = {
+	required: '${label} 是必填!',
+	types: {
+		email: '请输入一个有效的邮箱',
+	},
+}
+
 export default function Login() {
 	const router = useRouter()
-
+	const [messageApi, contextHolder] = message.useMessage()
+	const myMessage = (type: NoticeType, tips: string) => {
+		messageApi.open({
+			type: type,
+			content: tips,
+		})
+	}
 	const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-		console.log('Success:', values)
-		router.push('/home')
-		localStorage.setItem('loginInfor', JSON.stringify(values))
+		console.log(localStorage.getItem('loginInfor'))
+
+		let loginInfor: FieldType = localStorage.getItem('loginInfor')
+			? JSON.parse(localStorage.getItem('loginInfor') as string)
+			: {}
+		if (loginInfor.username == values.username) {
+			if (loginInfor.password == values.password) {
+				myMessage('success', '登录成功')
+				localStorage.setItem('isLogin', 'true')
+				router.push('/page1/home')
+			} else {
+				myMessage('warning', '密码错误')
+			}
+		} else {
+			myMessage('warning', '用户名不存在，请先注册')
+		}
 	}
 
-	const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (
-		errorInfo
-	) => {
-		console.log('Failed:', errorInfo)
+	const handleRegister = () => {
+		router.push('/register')
 	}
+
 	return (
 		<div className="login flex items-center justify-center">
+			{contextHolder}
 			<Form
 				name="basic"
 				labelCol={{ span: 8 }}
@@ -33,20 +59,25 @@ export default function Login() {
 				style={{ maxWidth: 800 }}
 				initialValues={{ remember: true }}
 				onFinish={onFinish}
-				// onFinishFailed={onFinishFailed}
 				autoComplete="off"
+				validateMessages={validateMessages}
 				className="mt-40">
 				<Form.Item<FieldType>
 					label="用户名"
 					name="username"
-					rules={[{ required: true, message: 'Please input your username!' }]}>
+					rules={[
+						{
+							type: 'email',
+							required: true,
+						},
+					]}>
 					<Input placeholder="请输入你的注册的邮箱地址" />
 				</Form.Item>
 
 				<Form.Item<FieldType>
 					label="密码"
 					name="password"
-					rules={[{ required: true, message: 'Please input your password!' }]}>
+					rules={[{ required: true, message: '请输入你的密码!' }]}>
 					<Input.Password placeholder="请输入你的密码" />
 				</Form.Item>
 
@@ -61,7 +92,7 @@ export default function Login() {
 					<Button type="primary" htmlType="submit" className="mr-8">
 						登录
 					</Button>
-					<Button type="primary" htmlType="submit">
+					<Button type="primary" onClick={handleRegister}>
 						注册
 					</Button>
 				</Form.Item>
