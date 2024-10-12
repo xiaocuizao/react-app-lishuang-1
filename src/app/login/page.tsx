@@ -36,7 +36,7 @@ export default function Login() {
 			if (loginInfor.password == values.password) {
 				myMessage('success', '登录成功')
 				localStorage.setItem('isLogin', 'true')
-				router.push('/page1/home')
+				router.push('/home')
 			} else {
 				myMessage('warning', '密码错误')
 			}
